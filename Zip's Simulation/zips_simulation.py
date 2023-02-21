@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 import math
 import pandas as pd
 
-# Find average number of people who walk out with less balls than they start out with (1 -> 0)
-
 # Person Matrix:
 # [[Whether or not they will steal]
 #  [If they will steal, which person in the room they will target]
@@ -33,7 +31,7 @@ def create_room(size, steal_p, ball_start_p):
         room[:, i] = create_person(i, size, steal_p, ball_start_p)
     return room
 
-def zip_process(size):
+def zip_process_total(size):
     room = create_room(size, STEAL_P, BALL_START_P)
     for i in range(size):
         if room[0][i] == 1:
@@ -47,19 +45,32 @@ def zip_process(size):
             less_balls += 1
     return room, less_balls
 
+# set_2_size_rooms = []
+# possible_persons = [[0, 0], [1, 0], [0, 1], [1, 1]]
+# for i in range(len(possible_persons)):
+#     for j in range(len(possible_persons)):
+#         room = np.zeros((4, 2), dtype=int)
+#         person1 = possible_persons[i]
+#         person2 = possible_persons[j]
+#         room[:, 0] = [person1[0], 1, person1[1], 0]
+#         room[:, 1] = [person2[0], 0, person2[1], 0]
+#         set_2_size_rooms.append(room)
+
+# Find average number of people who walk out with less balls than they start out with (1 -> 0)
+
 def trials(reps, size):
     less_balls_data = np.zeros(reps, dtype=int)
     for i in range(reps):
-        less_balls_data[i] = zip_process(size)[1]
+        less_balls_data[i] = zip_process_total(size)[1]
     return less_balls_data
 
 def trials_averages(a_reps, reps, size):
-    averages = np.zeros(a_reps, dtype=int)
+    averages = np.zeros(a_reps)
     for i in range(a_reps):
         averages[i] = np.average(trials(reps, size))
     return averages
 
-# Confidence interval for determing number of trialss per room size
+# Confidence interval for determing number of trials per room size
 # Z_SCORE = 3.291
 # TRIALS = 10
 # ROOM_SIZE = 1000
@@ -68,8 +79,8 @@ def trials_averages(a_reps, reps, size):
 # mean = np.average(a)
 # ci = Z_SCORE*(std/math.sqrt(ROOM_SIZE))
 
-# Finding the average amount of people who come out of the zip room with less balls than they went in with from room size 2-1000 and exporting it to a csv
-# size_cap = 1000
+# Finding the average amount of people who come out of the zip room with less balls than they went in with from room size 2-sizecap and exporting it to a csv
+# size_cap = 100
 # final_averages = np.zeros([size_cap-1, 2])
 # for i in range(1, size_cap):
 #     final_averages[i-1][0] = i+1
@@ -77,3 +88,4 @@ def trials_averages(a_reps, reps, size):
 # df = pd.DataFrame(final_averages, columns=["Room Size", "Average"])
 # print(df)
 # df.to_csv('rooms2x1000-10x10trials.csv', index=None)
+
